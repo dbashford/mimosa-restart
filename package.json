@@ -1,0 +1,32 @@
+{
+  "name": "mimosa-restart",
+  "version": "0.1.0",
+  "homepage": "https://github.com/dbashford/mimosa-restart",
+  "author": "David Bashford",
+  "description": "A Mimosa module that will automatically restart Mimosa when your compiled directory is removed",
+  "contributors": [
+    {
+      "name": "David Bashford",
+      "email": "dbashford@hotmail.com"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dbashford/mimosa-restart"
+  },
+  "keywords": [
+    "mimosa",
+    "mmodule",
+    "restart",
+    "reload",
+    "reboot"
+  ],
+  "dependencies": {
+    "chokidar": "0.8.2"
+  },
+  "main": "./src/index",
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.10"
+  }
+}
