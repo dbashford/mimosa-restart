@@ -7,6 +7,8 @@ This module will restart the Mimosa process when you delete the `watch.compiledD
 
 For more information regarding Mimosa, see http://mimosa.io
 
+NOTE: This module requires Mimosa `v2.2.4` or higher.
+
 ## Usage
 
 Add `'restart'` to your list of modules.  That's all!  Mimosa will install the module for you when you start `mimosa watch` or `mimosa build`.
