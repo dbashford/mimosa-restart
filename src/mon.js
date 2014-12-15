@@ -4,9 +4,18 @@
 
 var path = require( "path" )
   , fs = require( "fs" )
-  , spawn = require( "child_process" ).spawn
-  , watchDir = process.argv[2]
-  , args = process.argv[3].split( "|%|" );
+  , spawn = require( "child_process" ).spawn;
+
+var args = process.argv[ process.argv.length - 1 ].split( "|%|" );
+var watchDirs = [];
+
+// argv[0] = node
+// argv[1] = mon.js
+// argv[1] - argv[argv.length - 1] = folders
+// argv[argv.length - 1] = mimosa arguments
+for ( var i = 2; i < process.argv.length - 1; i++ ) {
+  watchDirs.push(process.argv[i]);
+}
 
 // listen for parent process to tell this one to go away
 process.on( "message", function( m ) {
@@ -37,12 +46,25 @@ var restart = function() {
 };
 
 var PathWatcher = require( "pathwatcher" );
-PathWatcher.watch(watchDir, function(event) {
-  if ( [ "delete", "rename" ].indexOf( event ) > -1 ) {
-    if ( !fs.existsSync( watchDir ) ) {
-      /* eslint no-console:0 */
-      console.log( "Restarting Mimosa...");
-      restart();
+watchDirs.forEach( function( watchDir) {
+  var dirConfig = watchDir.split( "||" );
+  var pathh = dirConfig[0];
+  var isRemoved = dirConfig[1] === "removed";
+  PathWatcher.watch(pathh, function(event, eventPath) {
+    console.log("SOMETHING HAPPENED", event, eventPath)
+    if ( isRemoved && [ "delete", "rename" ].indexOf( event ) > -1 ) {
+      if ( !fs.existsSync( pathh ) ) {
+        /* eslint no-console:0 */
+        console.log( "[[ " + pathh + " ]] has been removed, restarting Mimosa...");
+        restart();
+      }
+    } else {
+      if ( event === "change"  ) {
+        /* eslint no-console:0 */
+        console.log( "[[ " + pathh + " ]] has been updated, restarting Mimosa...");
+        restart();
+      }
     }
-  }
+  });
 });
+

@@ -3,7 +3,7 @@ mimosa-restart
 
 ## Overview
 
-This module will restart the Mimosa process when you delete the `watch.compiledDir`.
+This module will restart the Mimosa process when you delete certain folders/files.
 
 For more information regarding Mimosa, see http://mimosa.io
 
@@ -15,10 +15,29 @@ Add `'restart'` to your list of modules.  That's all!  Mimosa will install the m
 
 ## Functionality
 
-This module will watch the `watch.compiledDir` and when it is removed, it will shut down the existing Mimosa and restart a new one within the same process.
+This module will watch configured directories and when they are removed/updated it will shut down the existing Mimosa and restart a new one within the same process.
 
-This saves you the trouble of needing to restart Mimosa from the command line if your `compiledDir` gets out of sync, for instance, if you are switching branches.
+This, for example, saves you the trouble of needing to restart Mimosa from the command line if your `compiledDir` gets out of sync, like when switching branches while Mimosa is running.
+
+Or you could configure Mimosa to restart when the `mimosa-config.js` is changed.
 
 ## Default Configuration
 
-This module has no configuration.  It uses the `watch.compiledDir` setting of Mimosa.
+```javascript
+restart: {
+  updated:[],
+  deleted:[]
+}
+```
+* `updated`, an array of strings. Paths, relative to the root of your project, to files/directories that, when updated, would cause Mimosa to be restarted.
+* `deleted`, an array of strings. Paths, relative to the root of your project, to files/directories that, when removed, would cause Mimosa to be restarted.
+
+
+## Example Configuration
+
+```javascript
+restart: {
+  removed:["public"],
+  updated:["mimosa-config.js"]
+}
+```

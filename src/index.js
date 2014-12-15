@@ -2,6 +2,8 @@
 
 "use strict";
 
+var config = require("./config");
+
 var _manageWindows = function() {
   var win32 = process.platform === "win32";
   if ( win32 ) {
@@ -42,8 +44,9 @@ var _monitorMimosa = function( mimosaConfig, options, next ) {
 
   // set up separate watcher in different process
   var monPath = path.join( __dirname, "mon.js" );
+  var childArgs = mimosaConfig.restart.updated.concat(mimosaConfig.restart.removed).concat( args.join( "|%|" ) );
   var child = fork( monPath,
-    [mimosaConfig.watch.compiledDir, args.join( "|%|" )],
+    childArgs,
     {
       detached: true,
       stdio:"inherit"
@@ -97,8 +100,15 @@ var _monitorMimosa = function( mimosaConfig, options, next ) {
   next();
 };
 
-exports.registration = function( mimosaConfig, register ) {
+var registration = function( mimosaConfig, register ) {
   if ( mimosaConfig.isWatch ) {
     register( ["postBuild"], "complete", _monitorMimosa );
   }
+};
+
+module.exports = {
+  registration: registration,
+  defaults: config.defaults,
+  placeholder: config.placeholder,
+  validate: config.validate
 };
